@@ -78,4 +78,9 @@ dependencies {
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02'
+    // Integration with observables
+    implementation 'androidx.compose.runtime:runtime-livedata:1.0.0-beta01'
+    implementation 'androidx.compose.runtime:runtime-rxjava2:1.0.0-beta01'
 }
