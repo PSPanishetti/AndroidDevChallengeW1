@@ -12,7 +12,7 @@ This is a pet adoption app. It contains two screens mainly one screen displays l
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
-The main motivation for making this app is, I just wanted to explore jetpack Compose and I wanted to check it's advantages over the traditional approach.
+The main motivation for making this app is, I just wanted to explore jetpack Compose and I wanted to check it's advantages over the traditional approach. It was fun
 
 ## :camera_flash: Screenshots
 <!-- You can add more screenshots here if you like -->
