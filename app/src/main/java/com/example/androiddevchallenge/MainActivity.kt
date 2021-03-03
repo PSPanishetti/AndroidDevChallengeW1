@@ -19,14 +19,38 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -47,7 +71,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.androiddevchallenge.ui.MainViewModel
 import com.example.androiddevchallenge.ui.models.ModelPet
-import com.example.androiddevchallenge.ui.theme.*
+import com.example.androiddevchallenge.ui.theme.ComposeDevChallengeTheme
+import com.example.androiddevchallenge.ui.theme.CustomTitleFont
+import com.example.androiddevchallenge.ui.theme.LargePadding
+import com.example.androiddevchallenge.ui.theme.StandardPadding
 
 var infoPet: MutableLiveData<ModelPet?> = MutableLiveData(null)
 lateinit var lifecycleOwner: LifecycleOwner
@@ -57,79 +84,73 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java);
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         lifecycleOwner = this
         setContent {
             MyApp {
                 MyScreenContent()
             }
-
-
         }
-
     }
 
     override fun onBackPressed() {
-        if(mainViewModel.infoPetObj.value!=null){
+        if (mainViewModel.infoPetObj.value != null) {
             mainViewModel.showPet(null)
-        }else{
+        } else {
             super.onBackPressed()
         }
-
     }
-
 }
 
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
     ComposeDevChallengeTheme {
-        Surface(color = MaterialTheme.colors.surface,
+        Surface(
+            color = MaterialTheme.colors.surface,
             modifier = Modifier
                 .fillMaxHeight(1f)
-                .fillMaxWidth(1f)) {
+                .fillMaxWidth(1f)
+        ) {
             content()
         }
     }
 }
 
-
-
-
 @Composable
 fun MyScreenContent() {
 
-    val petInfo:ModelPet? by mainViewModel.infoPetObj.observeAsState()
-    Log.d("PetInfo","Pet info  is : $petInfo")
+    val petInfo: ModelPet? by mainViewModel.infoPetObj.observeAsState()
+    Log.d("PetInfo", "Pet info  is : $petInfo")
 
     Column {
-        Row{
+        Row {
             TitleHeader("Love to adopt and\nLove to live")
         }
         SearchToolBar()
         PetsListContainer(ModelPet.getDummyPets())
     }
 
-    if(petInfo!=null){
+    if (petInfo != null) {
         ShowPetInfoViaComposabel(pet = petInfo!!)
     }
-
-
 }
 
-
 @Composable
-fun PetsListContainer(pets : ArrayList<ModelPet>,
-                      modifier: Modifier = Modifier
+fun PetsListContainer(
+    pets: ArrayList<ModelPet>,
+    modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colors
     Column(modifier = androidx.compose.ui.Modifier.padding(LargePadding)) {
-        Text(text = "Our Recommendations",
+        Text(
+            text = "Our Recommendations",
             style = MaterialTheme.typography.subtitle2.copy(
                 fontSize = 18.sp
-            ),)
+            ),
+        )
         Divider(
-            color=colors.primary,
+            color = colors.primary,
             modifier = modifier
                 .fillMaxWidth(0.4f)
                 .padding(top = StandardPadding),
@@ -139,21 +160,19 @@ fun PetsListContainer(pets : ArrayList<ModelPet>,
     }
 }
 
-
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PetsGrid(pets: ArrayList<ModelPet>){
+fun PetsGrid(pets: ArrayList<ModelPet>) {
 
-    LazyVerticalGrid(cells = GridCells.Fixed(2)){
-      items(pets){pet->
-          PetCard(pet = pet)
-      }
+    LazyVerticalGrid(cells = GridCells.Fixed(2)) {
+        items(pets) { pet ->
+            PetCard(pet = pet)
+        }
     }
 }
 
 @Composable
-fun TitleHeader(title: String,modifier: Modifier = Modifier) {
+fun TitleHeader(title: String, modifier: Modifier = Modifier) {
 
     val colors = lightColors()
 
@@ -166,10 +185,9 @@ fun TitleHeader(title: String,modifier: Modifier = Modifier) {
         ),
         color = colors.onSurface
     )
-
 }
 
-@Preview(showBackground = true,name="DefaultPreview")
+@Preview(showBackground = true, name = "DefaultPreview")
 @Composable
 fun DefaultPreview() {
     MyApp {
@@ -178,7 +196,7 @@ fun DefaultPreview() {
 }
 
 @Composable
-fun PetCard(pet:ModelPet, modifier: Modifier = Modifier){
+fun PetCard(pet: ModelPet, modifier: Modifier = Modifier) {
 
     Card(
         backgroundColor = MaterialTheme.colors.surface,
@@ -186,53 +204,54 @@ fun PetCard(pet:ModelPet, modifier: Modifier = Modifier){
         modifier = modifier
             .fillMaxWidth(1f)
             .wrapContentHeight()
-            .padding(16.dp)
-        ,
+            .padding(16.dp),
         elevation = 10.dp,
         /*border = BorderStroke(0.dp,MaterialTheme.colors.primary.copy(alpha = 0.3f))*/
     ) {
 
-        Column( modifier = modifier
-            .padding(8.dp)
-            .clip(
-                RoundedCornerShape(StandardPadding)
-            )
-            .clickable {
-                mainViewModel.showPet(pet)
-            },
+        Column(
+            modifier = modifier
+                .padding(8.dp)
+                .clip(
+                    RoundedCornerShape(StandardPadding)
+                )
+                .clickable {
+                    mainViewModel.showPet(pet)
+                },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Image(painter = painterResource(id = pet.image ),
+            Image(
+                painter = painterResource(id = pet.image),
                 contentDescription = null,
                 modifier = modifier
                     .height(100.dp)
                     .fillMaxWidth(1f),
-                contentScale = ContentScale.FillBounds)
+                contentScale = ContentScale.FillBounds
+            )
 
-            Text(text = pet.name,
+            Text(
+                text = pet.name,
                 style = MaterialTheme.typography.subtitle2,
-                modifier = modifier.padding(top= StandardPadding,bottom = 2.dp))
-
+                modifier = modifier.padding(top = StandardPadding, bottom = 2.dp)
+            )
         }
-
     }
-
 }
 
 @Preview
 @Composable
 fun ShowPetInfo() {
-    ShowPetInfoViaComposabel(ModelPet(R.drawable.d2,"Dexter",-2))
+    ShowPetInfoViaComposabel(ModelPet(R.drawable.d2, "Dexter", -2))
 }
-
 
 @Composable
 fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
     var colors = MaterialTheme.colors
-    Surface(modifier = Modifier
-        .fillMaxHeight(1f)
-        .fillMaxWidth(1f),
+    Surface(
+        modifier = Modifier
+            .fillMaxHeight(1f)
+            .fillMaxWidth(1f),
         color = MaterialTheme.colors.background
     ) {
 
@@ -241,10 +260,10 @@ fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
                 .padding(LargePadding)
                 .clip(RoundedCornerShape(5))
                 .background(colors.surface)
-        )
-        {
+        ) {
             Box {
-                Image(painter = painterResource(id = pet.image),
+                Image(
+                    painter = painterResource(id = pet.image),
                     contentDescription = null,
                     modifier = modifier
                         .clip(RoundedCornerShape(topStartPercent = 5, topEndPercent = 5))
@@ -256,10 +275,12 @@ fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
                 LazyColumn() {
 
                     item {
-                        Column(verticalArrangement = Arrangement.Top,
+                        Column(
+                            verticalArrangement = Arrangement.Top,
                             modifier = modifier
                                 .padding(top = 300.dp)
-                                .background(colors.surface)) {
+                                .background(colors.surface)
+                        ) {
 
                             Text(
                                 text = pet.name,
@@ -325,16 +346,16 @@ fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
                                 Column {
                                     Text(
                                         text = "${pet.name} is a nice dog." +
-                                                " I would like to keep him forever, But I am Jhon Cena and" +
-                                                " you know no one can see me. I want ${pet.name} to have a visible/physical owner so that he don't " +
-                                                "feel like he is living with an invisible man\n\nHe Got These Awesome Skills\n" +
-                                                "\n1. He is creative" +
-                                                "\n2. He loves people / kids" +
-                                                "\n3. He is brave" +
-                                                "\n4. He can save your life if you are in danger" +
-                                                "\n\nThe Cons About Him" +
-                                                "\nHe don't have any cons" +
-                                                "\n\nAdopt him and be a visible owner for him",
+                                            " I would like to keep him forever, But I am Jhon Cena and" +
+                                            " you know no one can see me. I want ${pet.name} to have a visible/physical owner so that he don't " +
+                                            "feel like he is living with an invisible man\n\nHe Got These Awesome Skills\n" +
+                                            "\n1. He is creative" +
+                                            "\n2. He loves people / kids" +
+                                            "\n3. He is brave" +
+                                            "\n4. He can save your life if you are in danger" +
+                                            "\n\nThe Cons About Him" +
+                                            "\nHe don't have any cons" +
+                                            "\n\nAdopt him and be a visible owner for him",
                                         modifier = modifier.padding(LargePadding),
                                         style = MaterialTheme.typography.body2.copy(lineHeight = 25.sp)
                                     )
@@ -372,18 +393,21 @@ fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
                                         }
                                     }
 
-                                    Button(onClick = {},
-                                        border = BorderStroke(2.dp,colors.primary),
+                                    Button(
+                                        onClick = {},
+                                        border = BorderStroke(2.dp, colors.primary),
                                         shape = RoundedCornerShape(5),
                                         modifier = modifier
                                             .fillMaxWidth(1f)
                                             .padding(LargePadding)
-                                            .height(60.dp)) {
+                                            .height(60.dp)
+                                    ) {
                                         Text(text = "ADOPT ${pet.name.toUpperCase()}")
                                     }
 
-                                    OutlinedButton(onClick = {},
-                                        border = BorderStroke(2.dp,colors.primary),
+                                    OutlinedButton(
+                                        onClick = {},
+                                        border = BorderStroke(2.dp, colors.primary),
                                         shape = RoundedCornerShape(5),
                                         modifier = modifier
                                             .fillMaxWidth(1f)
@@ -392,66 +416,65 @@ fun ShowPetInfoViaComposabel(pet: ModelPet, modifier: Modifier = Modifier) {
                                                 end = LargePadding,
                                                 bottom = LargePadding
                                             )
-                                            .height(60.dp)) {
+                                            .height(60.dp)
+                                    ) {
                                         Row {
-                                            Image(painter = painterResource(id = R.drawable.ic_baseline_phone_24),
+                                            Image(
+                                                painter = painterResource(id = R.drawable.ic_baseline_phone_24),
                                                 contentDescription = null,
-                                                modifier=modifier.padding(end = LargePadding),
-                                                colorFilter = ColorFilter.tint(colors.primary))
-                                            Text(text = "CALL JHON CENA",modifier = modifier)
+                                                modifier = modifier.padding(end = LargePadding),
+                                                colorFilter = ColorFilter.tint(colors.primary)
+                                            )
+                                            Text(text = "CALL JHON CENA", modifier = modifier)
                                         }
-
                                     }
-
-
-
                                 }
-
                             }
-
                         }
                     }
                 }
             }
-
         }
     }
 }
 
 @Composable
-fun Feature(modifier: Modifier = Modifier, featureText :String, featureIcon:Int, boxColor: Color) {
-    Surface(shape = RoundedCornerShape(5),
+fun Feature(modifier: Modifier = Modifier, featureText: String, featureIcon: Int, boxColor: Color) {
+    Surface(
+        shape = RoundedCornerShape(5),
         modifier = modifier
             .wrapContentHeight(Alignment.Top)
             .wrapContentWidth(Alignment.Start),
         border = BorderStroke(
             1.dp,
-            boxColor.copy(alpha = 0.5f)),
+            boxColor.copy(alpha = 0.5f)
+        ),
         color = boxColor.copy(0.03f)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .padding(LargePadding)
-                .defaultMinSize(50.dp)) {
-            Image(painter = painterResource(featureIcon),
+                .defaultMinSize(50.dp)
+        ) {
+            Image(
+                painter = painterResource(featureIcon),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(boxColor.copy(alpha = 1f)),
-                modifier=modifier.size(30.dp)
+                modifier = modifier.size(30.dp)
             )
-            Text(text = featureText,
+            Text(
+                text = featureText,
                 style = MaterialTheme.typography.subtitle2,
-                modifier = modifier.padding(top= StandardPadding),
+                modifier = modifier.padding(top = StandardPadding),
                 color = boxColor
             )
         }
     }
-
 }
 
-
 @Composable
-fun SearchToolBar(modifier: Modifier = Modifier){
+fun SearchToolBar(modifier: Modifier = Modifier) {
 
     val colors = MaterialTheme.colors
 
@@ -463,13 +486,15 @@ fun SearchToolBar(modifier: Modifier = Modifier){
             .wrapContentHeight(align = Alignment.CenterVertically)
         /*.clip(RoundedCornerShape(50))*/,
 
-        border = BorderStroke(2.dp,colors.primary.copy(alpha = 0.3f)),
+        border = BorderStroke(2.dp, colors.primary.copy(alpha = 0.3f)),
         backgroundColor = colors.surface,
         elevation = 10.dp
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(painter = painterResource(
-                id = R.drawable.ic_baseline_search_24),
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_baseline_search_24
+                ),
                 contentDescription = "Who Cares",
                 colorFilter = ColorFilter.tint(colors.onSurface, BlendMode.SrcAtop),
                 alpha = 1f,
@@ -478,15 +503,11 @@ fun SearchToolBar(modifier: Modifier = Modifier){
                     .wrapContentHeight()
                     .padding(start = StandardPadding)
             )
-            Text(text = "Search",
+            Text(
+                text = "Search",
                 color = lightColors().onSurface.copy(alpha = 1f),
-                modifier = modifier.padding(top=LargePadding,bottom = LargePadding,start= StandardPadding))
+                modifier = modifier.padding(top = LargePadding, bottom = LargePadding, start = StandardPadding)
+            )
         }
-
     }
 }
-
-
-
-
-
